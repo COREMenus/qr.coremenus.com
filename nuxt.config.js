@@ -22,6 +22,10 @@ export default {
     port: process.env.PORT
   },
 
+  env: {
+    BASE_URL: process.env.BASE_URL
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [],
 
