@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  qrpage:
+    build:
+      context: .
+    ports:
+      - 8001:8001
+    networks:
+      - web
+    command: npm run start
+    env_file:
+      - .env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qrpage.entrypoints=websecure
+      - traefik.http.routers.qrpage.rule=Host(`qr.coremenus.com`)
+      - traefik.http.services.qrpage.loadbalancer.server.port=8001
+      - traefik.http.routers.qrpage.tls.certresolver=staging
+      - traefik.docker.network=traefik_default
+
+networks:
+  web:
+    external:
+      name: traefik_default
