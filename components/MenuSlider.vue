@@ -61,7 +61,7 @@ export default {
         name: 'shop-shopId-menuId',
         params: {
           shopId: this.$route.params.shopId,
-          menuId: menu,
+          menuId: menu.id,
         },
         query: this.$route.query,
       })
