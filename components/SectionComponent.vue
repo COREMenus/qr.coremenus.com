@@ -1,7 +1,7 @@
 <template>
   <section v-if="products.length > 0" class="mt-3">
     <span class="text-xl font-semibold">{{ sectionValues.name }}</span>
-    <div class="grid grid-cols-2 gap-3 mt-3">
+    <div class="grid grid-cols-1 gap-3 mt-3">
       <product-component
         v-for="product in products"
         :key="product.id"

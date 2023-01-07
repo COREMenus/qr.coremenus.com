@@ -57,6 +57,9 @@ export const mutations = {
     },
     setOrderId(state, id) {
         state.orderId = id
+    },
+    setNote(state, note) {
+      state.note = note
     }
 }
 
@@ -66,6 +69,7 @@ export const actions = {
         const order = {
             products: state.items,
             type: state.type,
+            note: state.note,
             car_number: state.car_number,
             table_number: state.table_number,
             BranchId: state.BranchId

@@ -1,45 +1,52 @@
 <template>
-  <div>
+  <div class="p-2">
     <button
-      class="fixed top-3 right-1 border-2 w-7 h-7 z-40 rounded-md text-center text-sm"
-      :style="{
-        borderColor: settings.accent_color,
-        color: settings.accent_color,
-      }"
-      @click.stop="menu = !menu"
-    >
-      <i class="fa-solid fa-globe"></i>
+      class="py-2 px-1.5 shadow-md w-24 rounded-md text-sm flex justify-between items-center"
+      @click.stop="menu = !menu">
+      <i class="fa-solid fa-globe opacity-50"></i>
+      <span> {{ languages[$i18n.locale].native }} </span>
     </button>
-    <transition name="grow">
-      <div
-        v-if="menu"
-        class="absolute w-40 right-1 rounded-md text-center z-40 top-12 border-2"
-        :style="{ backgroundColor: settings.background_color, borderColor:borderColor}"
+    <ul
+      v-if="menu"
+      class="w-24 shadow-lg absolute text-center text-sm mt-2"
+      :style="{ backgroundColor: settings.background_color }"
+    >
+      <!-- Default Language -->
+      <li class="p-2 flex items-center justify-between">
+        <div
+          class="w-3 h-3 rounded-full opacity-60 border-2"
+          :style="{
+            backgroundColor: isSelected(settings.default_language)
+              ? bgText
+              : settings.background_color,
+            borderColor: bgText,
+          }"
+        ></div>
+        <nuxt-link :to="switchLocalePath(settings.default_language)">
+          {{ languages[settings.default_language].native }}
+        </nuxt-link>
+      </li>
+
+      <!-- Other Languages -->
+      <li
+        v-for="(language, i) in settings.enabled_languages"
+        :key="i"
+        class="p-2 flex items-center justify-between"
       >
-      <!-- :style="{ backgroundColor: settings.background_color }" -->
-        <ul>
-            <li 
-            class="py-2"
-            :style="{ borderColor: borderColor }"
-            >
-                <nuxt-link :to="switchLocalePath(settings.default_language)">
-                    {{languages[settings.default_language].native}}
-                </nuxt-link>
-                
-            </li>
-          <li
-            v-for="(language, i) in settings.enabled_languages"
-            :key="i"
-            class="py-2"
-            :style="{ borderColor: borderColor }"
-          >
-            <nuxt-link :to="switchLocalePath(language)">
-                {{ languages[language].native }}
-            </nuxt-link>
-          </li>
-        </ul>
-      </div>
-    </transition>
+        <div
+        class="w-3 h-3 rounded-full opacity-60 border-2"
+          :style="{
+            backgroundColor: isSelected(language)
+              ? bgText
+              : settings.background_color,
+            borderColor: bgText,
+          }"
+        ></div>
+        <nuxt-link :to="switchLocalePath(language)">
+          {{ languages[language].native }}
+        </nuxt-link>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -54,39 +61,40 @@ export default {
   },
   computed: {
     ...mapState(['settings']),
-    ...mapGetters(['bgText', 'borderColor']),
+    ...mapGetters(['bgText', 'borderColor', 'accentText']),
     languages() {
       return languages
     },
   },
   mounted() {
     document.addEventListener('click', () => {
-        this.menu = false
+      this.menu = false
     })
   },
   methods: {
-    ...mapMutations(['setLocale', 'setDir'])
-  }
+    ...mapMutations(['setLocale', 'setDir']),
+    isSelected(language) {
+      return this.$i18n.locale === language
+    },
+  },
 }
 </script>
 
 <style scoped>
-li {
-  border-bottom: 0.3px solid;
-}
-
 .grow-enter-active,
 .grow-leave-active {
   transition: all 0.5s;
 }
 
-.grow-enter, .grow-leave-to {
-    transform: translateY(-100%);
-    opacity: 0;
+.grow-enter,
+.grow-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
 }
 
-.grow-enter-to, .grow-leave {
-    transform: translateY(0);
-    opacity: 1;
+.grow-enter-to,
+.grow-leave {
+  transform: translateY(0);
+  opacity: 1;
 }
 </style>

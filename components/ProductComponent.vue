@@ -2,31 +2,35 @@
   <div>
     <product-modal ref="productModal" :product="product"> </product-modal>
     <div
-      class="h-72 flex flex-col items-start"
+      class="h-32 flex flex-row items-start gap-2 shadow-md relative"
       @click="openProduct"
     >
       <img
-        width="180"
-        height="180"
-        class="rounded-lg w-44 h-44 object-cover object-center"
-        :src="product.images[0] || 'https://cdn.coremenus.com/a8c5540a-c80f-46b6-9174-efddefbdca9e'"
+        class="rounded-sm w-32 h-32 object-cover object-center"
+        :src="
+          product.images[0] ||
+          'https://cdn.coremenus.com/a8c5540a-c80f-46b6-9174-efddefbdca9e'
+        "
         alt=""
       />
-      <span class="font-semibold">{{currencySymbol}} {{ product.price }}</span>
-      <span class="text-xl">{{ fields.name }}</span>
-      <p class="text-sm text-opacity-60 overflow-hidden description w-full">
-        {{ fields.description }}
-      </p>
+      <div class="flex flex-col">
+        <span class="text-lg">{{ fields.name }}</span>
+        <p class="text-sm text-opacity-60 overflow-hidden description w-full">
+          {{ fields.description }}
+        </p>
+        <Price class="absolute bottom-2 " :price="product.price" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
+import Price from './price.vue'
 import ProductModal from './ProductModal.vue'
 export default {
   name: 'ProductComponent',
-  components: { ProductModal },
+  components: { ProductModal, Price },
   props: ['product'],
   data() {
     return {
@@ -36,16 +40,17 @@ export default {
   },
   computed: {
     ...mapGetters(['currencySymbol']),
+    ...mapState(['dir']),
     fields() {
-        // this.product.$getters('getFields')(this.product, this.$i18n.locale)
-        const f = this.product.$getters('getFields')
-        return f(this.product, this.$i18n.locale)
-    }
+      // this.product.$getters('getFields')(this.product, this.$i18n.locale)
+      const f = this.product.$getters('getFields')
+      return f(this.product, this.$i18n.locale)
+    },
   },
   methods: {
     openProduct() {
-        this.$refs.productModal.modal = true
-    }
+      this.$refs.productModal.modal = true
+    },
   },
 }
 </script>

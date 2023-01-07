@@ -4,9 +4,8 @@
     class="min-h-screen"
     :style="{ color: bgText, background: settings.background_color }"
   >
-    <locale-selector></locale-selector>
-
     <BagModal ref="bagModal"></BagModal>
+    <locale-selector></locale-selector>
 
     <!-- * Logo -->
     <!-- <div>
@@ -21,8 +20,12 @@
     <MenuSlider></MenuSlider>
 
     <!-- * Main -->
-    <div>
+    <div class=" pb-12">
       <nuxt-child :key="$route.fullPath"></nuxt-child>
+    </div>
+
+    <div class="text-center text-sm">
+      Made By <a href="http://coremenus.com">Coremenus</a>
     </div>
 
     <!-- * Bag -->
@@ -50,7 +53,14 @@ import Section from '~/models/section.model'
 export default {
   components: { BagModal, MenuSlider, LocaleSelector },
   computed: {
-    ...mapState(['shop', 'settings', 'branch', 'dir', 'enableOrdering', 'branch']),
+    ...mapState([
+      'shop',
+      'settings',
+      'branch',
+      'dir',
+      'enableOrdering',
+      'branch',
+    ]),
     ...mapState('menu', ['menus']),
     ...mapGetters(['bgText', 'accentText']),
     currentMenuIndex() {

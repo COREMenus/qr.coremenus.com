@@ -140,7 +140,6 @@ export default {
   methods: {
     ...mapMutations('bag', ['addItem']),
     optionFields(option) {
-        console.log(option)
       const fields = {
         name: option.name,
       }
@@ -179,7 +178,6 @@ export default {
         ProductOptionId: this.selectedOption || null,
         price,
       }
-      console.log(item)
       this.addItem(item)
       this.closeModal()
     },
