@@ -1,14 +1,23 @@
 <template>
-  <div
-    :dir="dir"
-    class="min-h-screen"
-    :style="{ color: bgText, background: settings.background_color }"
-  >
+  <div>
     <BagModal ref="bagModal"></BagModal>
+     <!-- * Bag -->
+     <button
+        v-if="enableOrdering"
+        class="fixed bottom-3 right-1 w-16 h-16 z-40 rounded-full text-center text-3xl p-3"
+        :style="{ backgroundColor: settings.accent_color, color: accentText }"
+        @click="$refs.bagModal.modal = true"
+      >
+        <i class="fa-solid fa-bag-shopping"></i>
+      </button>
+    <div
+      :dir="dir"
+      class="min-h-screen flex flex-col"
+      :style="{ color: bgText, background: settings.background_color }"
+    >
     <locale-selector></locale-selector>
-
-    <!-- * Logo -->
-    <!-- <div>
+      <!-- * Logo -->
+      <!-- <div>
       <img
         class=" h-24 p-5 w-auto block right-0 left-0 mx-auto"
         src="/core-logo.png"
@@ -16,27 +25,23 @@
       />
     </div> -->
 
-    <!-- * Menu Slider -->
-    <MenuSlider></MenuSlider>
+      <!-- * Menu Slider -->
+      <MenuSlider></MenuSlider>
 
-    <!-- * Main -->
-    <div class=" pb-12">
-      <nuxt-child :key="$route.fullPath"></nuxt-child>
+      <!-- * Main -->
+      <div class="pb-12 flex-1">
+        <nuxt-child :key="$route.fullPath"></nuxt-child>
+      </div>
+
+      <div 
+      class="text-center text-sm h-6 fixed bottom-0 w-full"
+      :style="{ backgroundColor: settings.background_color }"
+      >
+        Powered by <a href="http://coremenus.com" class="text-yellow-800">Coremenus</a>
+      </div>
+
+     
     </div>
-
-    <div class="text-center text-sm">
-      Made By <a href="http://coremenus.com">Coremenus</a>
-    </div>
-
-    <!-- * Bag -->
-    <button
-      v-if="enableOrdering"
-      class="fixed bottom-3 right-1 w-16 h-16 z-40 rounded-full text-center text-3xl p-3"
-      :style="{ backgroundColor: settings.accent_color, color: accentText }"
-      @click="$refs.bagModal.modal = true"
-    >
-      <i class="fa-solid fa-bag-shopping"></i>
-    </button>
   </div>
 </template>
 

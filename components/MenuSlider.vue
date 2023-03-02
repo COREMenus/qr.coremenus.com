@@ -13,7 +13,7 @@
       >
         <img
           class="h-20 w-20 rounded-full object-cover block right-0 left-0 mx-auto"
-          :src="menu.imageURL"
+          :src="menu.imageURL || '/no-image.png'"
           alt=""
         />
         <div class="h-10 text-center">

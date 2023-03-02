@@ -1,5 +1,8 @@
 <template>
   <div class="px-5 mt-6">
+    <div v-if="sections.length < 1" class="text-center text-xl">
+      No Items
+    </div>
     <section-component
       v-for="section in sections"
       :key="section.id"

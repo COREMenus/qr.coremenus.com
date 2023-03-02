@@ -13,7 +13,7 @@
       <!-- * declined order -->
       <div v-else-if="order.status === 'declined'" class="text-center">
         <h1 class="text-3xl mt-2">{{$t('declined_title')}}</h1>
-        <p class="text-xl">{{$('declined_description')}}</p>
+        <p class="text-xl">{{$t('declined_description')}}</p>
       </div>
 
       <!-- * confirmed order -->
