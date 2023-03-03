@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :dir="dir">
     <BagModal ref="bagModal"></BagModal>
      <!-- * Bag -->
      <button
@@ -11,7 +11,6 @@
         <i class="fa-solid fa-bag-shopping"></i>
       </button>
     <div
-      :dir="dir"
       class="min-h-screen flex flex-col"
       :style="{ color: bgText, background: settings.background_color }"
     >

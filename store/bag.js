@@ -7,7 +7,7 @@ export const state = () => ({
     BranchId: '',
     ShopId: '',
     note: '',
-
+    customer_name: ''
 })
 
 export const mutations = {
@@ -52,6 +52,9 @@ export const mutations = {
     setTableNumber(state, number) {
         state.table_number = number
     },
+    setCustomerName(state, newName) {
+      state.customer_name = newName
+    },
     setStatus(state, status) {
         state.status = status
     },
@@ -72,6 +75,7 @@ export const actions = {
             note: state.note,
             car_number: state.car_number,
             table_number: state.table_number,
+            customer_name: state.customer_name,
             BranchId: state.BranchId
         }
         this.$socket.emit('orders:new', order)

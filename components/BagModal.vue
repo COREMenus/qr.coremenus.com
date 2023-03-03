@@ -1,8 +1,8 @@
 <template>
   <div
     v-if="modal"
-    class="fixed w-full h-full z-50 overflow-scroll z-50"
-    :style="{ background: settings.background_color }"
+    class="fixed w-full h-full z-50 overflow-scroll flex flex-col gap-5"
+    :style="{ background: settings.background_color, color: bgText }"
   >
     <!-- * Header -->
     <div
@@ -18,17 +18,22 @@
       <span class="text-2xl">{{ $t('bag_items') }}</span>
     </div>
 
+    <!-- * Card is Empty -->
+    <div v-if="items.length < 1" class="text-xl text-center">
+      Your cart is empty
+    </div>
+
     <!-- * Content -->
-    <div class="p-2 mt-5">
+    <div v-else class="flex flex-col flex-1 p-2">
       <!-- * Items -->
-      <div class="flex flex-col gap-3 overflow-scroll">
+      <div class="flex flex-col gap-3 overflow-scroll flex-1">
         <div
           v-for="(item, i) in items"
           :key="i"
           class="h-24 rounded-md md:w-96 flex gap-2"
         >
           <img
-            class="object-cover object-center w-24 h-24"
+            class="object-cover object-center w-24 h-24 rounded-md"
             :src="item.product.images[0]"
             alt=""
           />
@@ -55,59 +60,75 @@
                 </button>
               </div>
               <button
-                class="bg-red-500 text-white py-0.5 px-2 text-xs rounded-sm"
+                class=" text-red-500 py-0.5 px-2 text-xl rounded-sm"
                 @click="removeItem(item)"
               >
-                Remove
+                <i class="fa-solid fa-trash"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- * Notes -->
-      <div class="flex flex-col gap-1 mt-5">
-        <label for="notes">{{ $t('notes') }}</label>
-        <textarea
-          v-model="noteText"
-          name="notes"
-          rows="3"
-          class="border-2 p-1 rounded-md bg-transparent"
-          :style="{ borderColor: borderColor }"
-        ></textarea>
-      </div>
+      <form class="flex flex-col gap-3" @submit.prevent="placeOrder">
 
-      <!-- * Summary -->
-      <div class="flex flex-col gap-1 mt-5">
-        <div class="flex gap-1">
-          <span>{{ $t('subtotal') }}:</span>
-          <Price :price="subtotal" />
+        <!-- * Summary -->
+        <div class="flex flex-col gap-1">
+          <div class="flex gap-1">
+            <span>{{ $t('subtotal') }}:</span>
+            <Price :price="subtotal" />
+          </div>
+          <div class="flex gap-1">
+            <span>{{ $t('taxes') }}:</span> <Price :price="tax" />
+          </div>
+          <div class="flex gap-1">
+            <span>{{ $t('total') }}:</span> <Price :price="total" />
+          </div>
         </div>
-        <div class="flex gap-1">
-          <span>{{ $t('taxes') }}:</span> <Price :price="tax" />
-        </div>
-        <div class="flex gap-1">
-          <span>{{ $t('total') }}:</span> <Price :price="total" />
-        </div>
-      </div>
 
-      <!-- * Car Number -->
-      <div v-if="type == 'car'" class="flex flex-col mt-5">
-        <label for="carNumber">{{ $t('car_number') }}</label>
-        <input
-          v-model="carNumberText"
-          type="text"
-          :style="{ borderColor: borderColor }"
-          class="text-xl p-1 w-full border-2 rounded-md bg-transparent"
-        />
-      </div>
+        <!-- * Notes -->
+        <div class="flex flex-col gap-1">
+          <label for="notes">{{ $t('notes') }}</label>
+          <textarea
+            v-model="noteText"
+            name="notes"
+            rows="3"
+            class="border-2 p-1 rounded-md bg-transparent"
+            :style="{ borderColor: borderColor }"
+          ></textarea>
+        </div>
 
-      <button
-        class="mt-5 p-2 bg-gray-900 w-full text-white rounded-md"
-        @click="placeOrder"
-      >
-        {{ $t('place_order') }}
-      </button>
+        <!-- * Name -->
+        <div class="flex flex-col">
+          <label for="carNumber">{{ $t('name') }}</label>
+          <input
+            v-model="customerName"
+            type="text"
+            required
+            :style="{ borderColor: borderColor }"
+            class=" p-1 w-full border-2 rounded-md bg-transparent"
+          />
+        </div>
+
+        <!-- * Car Number -->
+        <div v-if="type == 'car'" class="flex flex-col">
+          <label for="carNumber">{{ $t('car_number') }}</label>
+          <input
+            v-model="carNumberText"
+            type="text"
+            required
+            :style="{ borderColor: borderColor }"
+            class=" p-1 w-full border-2 rounded-md bg-transparent"
+          />
+        </div>
+
+        <button
+          class="p-2 bg-gray-900 w-full text-white rounded-md"
+          type="submit"
+        >
+          {{ $t('place_order') }}
+        </button>
+      </form>
     </div>
   </div>
 </template>
@@ -124,11 +145,13 @@ export default {
     }
   },
   computed: {
-    ...mapState('bag', ['items', 'type', 'note', 'car_number']),
+    ...mapState('bag', ['items', 'type', 'note', 'car_number', 'customer_name']),
     ...mapState(['settings', 'dir']),
     ...mapGetters(['bgText', 'currencySymbol', 'borderColor']),
     subtotal() {
-      return this.items.map((i) => parseInt(i.price) * i.quantity).reduce((p, c) => p + c, 0)
+      return this.items
+        .map((i) => parseInt(i.price) * i.quantity)
+        .reduce((p, c) => p + c, 0)
     },
     tax() {
       return this.subtotal * this.settings.tax
@@ -142,7 +165,7 @@ export default {
       },
       set(value) {
         return this.setNote(value)
-      }
+      },
     },
     carNumberText: {
       get() {
@@ -150,6 +173,14 @@ export default {
       },
       set(value) {
         return this.setCarNumber(value)
+      },
+    },
+    customerName: {
+      get() {
+        return this.customer_name
+      },
+      set(value) {
+        return this.setCustomerName(value)
       }
     }
   },
@@ -161,7 +192,8 @@ export default {
       'incrementItem',
       'decrementItem',
       'setNote',
-      'setCarNumber'
+      'setCarNumber',
+      'setCustomerName'
     ]),
     productFields(product) {
       return product.$getters('getFields')(product, this.$i18n.locale)
@@ -180,6 +212,9 @@ export default {
     },
     placeOrder() {
       if (this.items.length < 1) return
+      if (!this.customer_name) return
+      if (!this.car_number) return
+
       this.order()
       this.setStatus('pending')
       this.$socket.on('orders:new', (order) => {

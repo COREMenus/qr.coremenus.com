@@ -1,108 +1,116 @@
 <template>
-  <div
-    v-if="modal"
-    class="bg-black bg-opacity-50 fixed top-0 right-0 w-full h-full z-50"
-    @click.self="closeModal"
-  >
-    <transition name="slide-up">
-      <div
-        v-if="container"
-        class="fixed modal w-full bottom-0 right-0 rounded-t-xl overflow-y-auto"
-        :style="{ background: settings.background_color }"
-      >
-        <!-- TODO: Multiple Images -->
-        <img
-          class="w-full h-48 object-cover object-center rounded-sm"
-          :src="product.images[0] || '/no-image.jpg'"
-          alt=""
-        />
-        <div class=" px-4">
-          
-          <!-- * Product Name -->
-          <div class="text-2xl mt-3">
-            {{ fields.name }}
+  <transition name="slide-up">
+    <div
+      v-if="container"
+      class="absolute w-full h-screen bottom-0 right-0 rounded-t-xl overflow-y-auto z-50"
+      :style="{ background: settings.background_color }"
+    >
+      <!-- TODO: Multiple Images -->
+      <button 
+      class="absolute h-10 w-10 text-lg bg-black rounded-full top-4"
+      :class="dir === 'ltr' ? 'left-5' : 'right-5'"
+      @click="closeModal">
+        <i
+          class="fa-solid"
+          :class="dir === 'ltr' ? 'fa-arrow-left' : 'fa-arrow-right'"
+        ></i>
+      </button>
+      <img
+        class="w-full h-48 object-cover object-center rounded-sm"
+        :src="product.images[0] || '/no-image.jpg'"
+        alt=""
+      />
+      <div class="px-4">
+        <!-- * Product Name -->
+        <div class="text-2xl mt-3">
+          {{ fields.name }}
+        </div>
+
+        <div class="grid grid-flow-row grid-cols-5">
+          <div v-for="(warning, i) in product.warnings" :key="`warning-${i}`">
+            {{ warning }}
           </div>
-
-          <div class="grid grid-flow-row grid-cols-5">
-            <div v-for="warning, i in product.warnings" :key="`warning-${i}`">{{warning}}</div>
-            <div v-for="label, i in product.labels" :key="`label-${i}`" class=" text-center">{{label}}</div>
-          </div>
-
-          <!-- * Product Options -->
-          <div class="flex flex-col gap-2 my-3 options">
-            <div
-              v-for="option in options"
-              :key="option.id"
-              class="flex items-center gap-3 border-opacity-40 pb-2"
-              @click="selectedOption = option.id"
-            >
-              <div
-                class="w-4 h-4 rounded-sm border-2"
-                :style="{
-                  borderColor: settings.accent_color,
-                  backgroundColor:
-                    option.id === selectedOption ? settings.accent_color : '',
-                }"
-              ></div>
-              <div
-                class="flex justify-between flex-1"
-                :style="{
-                  color:
-                    option.id === selectedOption
-                      ? settings.accent_color
-                      : bgText,
-                }"
-              >
-                <span>{{ optionFields(option).name }}</span>
-                <span>{{ currencySymbol }} {{ option.price }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- * Notes -->
-          <textarea
-            v-if="enableOrdering"
-            v-model="note"
-            rows="3"
-            :placeholder="$t('notes')"
-            class="border-2 rounded-md p-2 text-lg w-full mt-3 mb-20 bg-transparent"
-            :style="{ borderColor: borderColor }"
-          >
-          </textarea>
-
           <div
-            v-if="enableOrdering"
-            class="fixed w-full right-0 h-20 mt-3 py-3 bottom-0 flex items-center justify-around border-t-2 border-opacity-30"
-            :style="{ background: settings.background_color }"
+            v-for="(label, i) in product.labels"
+            :key="`label-${i}`"
+            class="text-center"
           >
-            <button
-              :disabled="amount < 1"
-              :class="{ 'bg-opacity-50': amount < 1 }"
-              class="text-center text-xl p-2 w-32 rounded-md"
+            {{ label }}
+          </div>
+        </div>
+
+        <!-- * Product Options -->
+        <div class="flex flex-col gap-2 my-3 options">
+          <div
+            v-for="option in options"
+            :key="option.id"
+            class="flex items-center gap-3 border-opacity-40 pb-2"
+            @click="selectedOption = option.id"
+          >
+            <div
+              class="w-4 h-4 rounded-sm border-2"
               :style="{
-                backgroundColor: settings.accent_color,
-                color: accentText,
+                borderColor: settings.accent_color,
+                backgroundColor:
+                  option.id === selectedOption ? settings.accent_color : '',
               }"
-              @click="add"
+            ></div>
+            <div
+              class="flex justify-between flex-1"
+              :style="{
+                color:
+                  option.id === selectedOption ? settings.accent_color : bgText,
+              }"
             >
-              {{ $t('addToBag') }}
-            </button>
-            <div class="flex justify-between gap-1 w-32 text-center">
-              <button class="text-3xl" @click="decrement">-</button>
-              <input
-                v-model="amount"
-                readonly
-                :min="1"
-                type="number"
-                class="bg-transparent w-20 text-center text-3xl"
-              />
-              <button class="text-3xl" @click="increment">+</button>
+              <span>{{ optionFields(option).name }}</span>
+              <span>{{ currencySymbol }} {{ option.price }}</span>
             </div>
           </div>
         </div>
+
+        <!-- * Notes -->
+        <textarea
+          v-if="enableOrdering"
+          v-model="note"
+          rows="3"
+          :placeholder="$t('notes')"
+          class="border-2 rounded-md p-2 text-lg w-full mt-3 mb-20 bg-transparent"
+          :style="{ borderColor: borderColor }"
+        >
+        </textarea>
+
+        <div
+          v-if="enableOrdering"
+          class="fixed w-full right-0 h-20 mt-3 py-3 bottom-0 flex items-center justify-around border-t-2 border-opacity-30"
+          :style="{ background: settings.background_color }"
+        >
+          <button
+            :disabled="amount < 1"
+            :class="{ 'bg-opacity-50': amount < 1 }"
+            class="text-center text-xl p-2 w-32 rounded-md"
+            :style="{
+              backgroundColor: settings.accent_color,
+              color: accentText,
+            }"
+            @click="add"
+          >
+            {{ $t('addToBag') }}
+          </button>
+          <div class="flex justify-between gap-1 w-32 text-center">
+            <button class="text-3xl" @click="decrement">-</button>
+            <input
+              v-model="amount"
+              readonly
+              :min="1"
+              type="number"
+              class="bg-transparent w-20 text-center text-3xl"
+            />
+            <button class="text-3xl" @click="increment">+</button>
+          </div>
+        </div>
       </div>
-    </transition>
-  </div>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -124,7 +132,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['settings', 'locale', 'enableOrdering']),
+    ...mapState(['settings', 'locale', 'enableOrdering', 'dir']),
     ...mapGetters(['accentText', 'bgText', 'currencySymbol', 'borderColor']),
     options() {
       return Option.query().where('ProductId', this.product.id).all()
@@ -201,9 +209,6 @@ export default {
 </script>
 
 <style>
-.modal {
-  height: 90%;
-}
 .option-divider {
   border: 1px solid rgba(220, 220, 220, 0.203);
 }
