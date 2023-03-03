@@ -2,12 +2,12 @@
   <transition name="slide-up">
     <div
       v-if="container"
-      class="absolute w-full h-screen bottom-0 right-0 rounded-t-xl overflow-y-auto z-50"
+      class="absolute w-full h-full bottom-0 right-0 rounded-t-xl overflow-y-auto z-50"
       :style="{ background: settings.background_color }"
     >
       <!-- TODO: Multiple Images -->
       <button 
-      class="absolute h-10 w-10 text-lg bg-black rounded-full top-4"
+      class="absolute h-10 w-10 text-lg bg-black text-white rounded-full top-4"
       :class="dir === 'ltr' ? 'left-5' : 'right-5'"
       @click="closeModal">
         <i
