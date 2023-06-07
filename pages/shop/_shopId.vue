@@ -103,7 +103,7 @@ export default {
       } else if (this.$route.query.table) {
         this.setType('table')
         this.setOrdering(this.settings.table_ordering)
-        this.setTableNumber(this.$route.query.car)
+        this.setTableNumber(this.$route.query.table)
       }
 
       if (this.branch.active === 0) {
