@@ -213,7 +213,8 @@ export default {
     placeOrder() {
       if (this.items.length < 1) return
       if (!this.customer_name) return
-      if (!this.car_number) return
+      
+      if (this.type === "car" && !this.car_number) return;
 
       this.order()
       this.setStatus('pending')
